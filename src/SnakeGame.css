@@ -43,3 +43,8 @@
     color: #f44336;
     margin-bottom: 20px;
 }
+
+body {
+    overflow: hidden;
+}
+

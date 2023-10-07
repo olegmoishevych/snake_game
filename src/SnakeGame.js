@@ -70,6 +70,8 @@ const SnakeGame = () => {
         };
 
         const handleTouchMove = (e) => {
+            e.preventDefault();
+
             const touchEndPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             const xDiff = touchEndPos.x - touchStartPos.x;
             const yDiff = touchEndPos.y - touchStartPos.y;
