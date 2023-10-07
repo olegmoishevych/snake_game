@@ -102,18 +102,21 @@ const SnakeGame = () => {
         setIsGameOver(false);
     };
 
+    const isSnakeHead = (cell) => cell.x === snake[0].x && cell.y === snake[0].y;
+    const isSnakeTail = (cell) => cell.x === snake[snake.length - 1].x && cell.y === snake[snake.length - 1].y;
+
     return (
         <div className="game-container">
             <div className="grid">
                 {Array.from({ length: numRows * numCols }).map((_, index) => {
                     const x = index % numCols;
                     const y = Math.floor(index / numCols);
-                    const isSnake = snake.some(s => s.x === x && s.y === y);
-                    const isFood = food.x === x && food.y === y;
+                    const isSnakePart = snake.some(s => s.x === x && s.y === y);
+                    const isFoodPart = food.x === x && food.y === y;
                     return (
                         <div
                             key={index}
-                            className={`cell ${isSnake ? 'snake' : ''} ${isFood ? 'food' : ''}`}
+                            className={`cell ${isSnakePart ? 'snake' : ''} ${isFoodPart ? 'food' : ''} ${isSnakeHead({x, y}) ? 'snake-head' : ''} ${isSnakeTail({x, y}) ? 'snake-tail' : ''}`}
                             style={{ width: cellSize, height: cellSize }}
                         ></div>
                     );
