@@ -10,6 +10,7 @@ const SnakeGame = () => {
     const [food, setFood] = useState({ x: 5, y: 5 });
     const [dir, setDir] = useState({ x: 0, y: -1 });
     const [isGameOver, setIsGameOver] = useState(false);
+    const [touchStartPos, setTouchStartPos] = useState({ x: 0, y: 0 }); // Добавлено
 
     const moveSnake = useCallback(() => {
         const head = Object.assign({}, snake[0]);
@@ -63,9 +64,34 @@ const SnakeGame = () => {
                     break;
             }
         };
+
+        const handleTouchStart = (e) => {
+            setTouchStartPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        };
+
+        const handleTouchMove = (e) => {
+            const touchEndPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            const xDiff = touchEndPos.x - touchStartPos.x;
+            const yDiff = touchEndPos.y - touchStartPos.y;
+
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (xDiff > 0 && dir.x === 0) setDir({ x: 1, y: 0 });
+                else if (xDiff < 0 && dir.x === 0) setDir({ x: -1, y: 0 });
+            } else {
+                if (yDiff > 0 && dir.y === 0) setDir({ x: 0, y: 1 });
+                else if (yDiff < 0 && dir.y === 0) setDir({ x: 0, y: -1 });
+            }
+        };
+
         window.addEventListener('keydown', handleKeydown);
-        return () => window.removeEventListener('keydown', handleKeydown);
-    }, [dir]);
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchmove', handleTouchMove);
+        return () => {
+            window.removeEventListener('keydown', handleKeydown);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, [dir, touchStartPos]);
 
     const resetGame = () => {
         setSnake([{ x: 10, y: 10 }]);
